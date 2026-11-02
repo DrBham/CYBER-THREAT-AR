@@ -2,129 +2,208 @@
 
 # 🛡️ CYBER THREAT AR
 
-### Explore Cyber Threats. Learn to Stay Secure.
+### Making Cybersecurity Threats Visible Through Augmented Reality
 
-**An interactive augmented reality learning experience for cybersecurity awareness.**
+**An Interactive Cybersecurity Education Experience · Unity · Android**
 
-![Unity](https://img.shields.io/badge/Unity-2022.3_LTS-222222?logo=unity&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)
-![AR](https://img.shields.io/badge/AR-AR_Foundation-2463EB)
-![Status](https://img.shields.io/badge/Status-In_Development-F59E0B)
+![Unity](https://img.shields.io/badge/Unity-2022.3.62f3-20232A?style=flat-square&logo=unity)
+![AR Foundation](https://img.shields.io/badge/AR%20Foundation-5.2.2-2563EB?style=flat-square)
+![ARCore](https://img.shields.io/badge/ARCore-5.2.2-4285F4?style=flat-square)
+![C#](https://img.shields.io/badge/Language-C%23-512BD4?style=flat-square)
+![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)
+![Status](https://img.shields.io/badge/Status-AR%20Foundation%20Validated-15803D?style=flat-square)
 
-**Group 9 · AR/VR Course Project**
+**Scan a card · Explore a cyber threat · Learn how to stay safe**
 
 </div>
 
 ---
 
-## 📖 Overview
+## Overview
 
-**CYBER THREAT AR** is a mobile educational application concept that uses **Augmented Reality (AR)** to help learners recognize common cybersecurity threats. By pointing an Android device at printed **image cards**, users will be able to explore animated 3D representations of **phishing**, **malware**, and **ransomware**, read practical safety guidance, and test their knowledge through interactive quizzes.
+**CYBER THREAT AR** is an educational augmented reality application designed to make common cybersecurity threats easier to understand. With an Android device, users scan illustrated cards representing **phishing, malware, and ransomware**. Each recognized card serves as an anchor for a threat-specific 3D experience.
 
-> **Development status:** This repository is in its initial development phase. Features described below are **planned according to the Group 9 storyboard**, not yet confirmed as implemented.
+The project combines **image tracking**, **3D visualization**, and planned **interactive learning features** to connect everyday cybersecurity risks with memorable visual examples.
 
-## 🎯 Project Objectives
+> **Current status:** The Android AR foundation has been tested successfully with all three image targets and their corresponding placeholder objects. Final animated 3D scenes, touch interactions, educational pop-ups, and quizzes are planned and are **not yet presented as completed features**.
 
-| Understand cyber threats | Learn through interaction |
-| :--- | :--- |
-| Explain what phishing, malware, and ransomware are, with real-world examples and prevention tips. | Turn printed learning cards into interactive 3D scenes with animations, touch controls, and educational pop-ups. |
-| **Practice safer decisions** | **Apply AR technology** |
-| Reinforce knowledge with contextual multiple-choice quizzes and answer feedback. | Implement marker-based image tracking on supported Android devices using Unity and AR Foundation. |
+## Explore Three Cyber Threats
 
-## 🃏 Threat Cards & 3D Concepts
+<table>
+<tr>
+<td width="50%" align="center" valign="top">
 
-| 🎣 Phishing | 🐛 Malware | 🔐 Ransomware |
-| :---: | :---: | :---: |
-| Fishing hook and letter | Computer and bug | Safe and padlock |
-| A hook moves up and down | A bug circles the computer | The padlock locks automatically |
-| Recognize deceptive messages and links | Understand malicious software | Learn how file-locking attacks affect victims |
+### 🎣 Phishing
 
-## ✨ Planned Features
+<img src="Assets/08_ImageTargets/Phishing_Card_NoBorder.png" alt="Phishing image tracking card" width="190" />
 
-- **Image tracking:** Recognize three threat cards and place their matching 3D content above each card.
-- **Animated 3D scenes:** Present each threat through simple visual storytelling.
-- **Tap interaction:** Highlight a selected 3D object and open its educational information panel.
-- **Educational pop-ups:** Explain the threat, real-world examples, and prevention methods.
-- **Touch gestures:** Rotate objects up to 360° and scale them using multitouch input.
-- **Contextual quizzes:** Present multiple-choice questions based on the currently scanned card.
-- **Answer feedback:** Display green for correct and red for incorrect answers, with explanations and a score.
-- **Reset / scan again:** Restore the initial state and allow users to explore another card.
+Deceptive emails and messages that try to trick people into sharing sensitive information. **Planned 3D concept:** a hook pulling an envelope.
 
-## 🔄 Intended User Journey
+</td>
+<td width="50%" align="center" valign="top">
+
+### 🐛 Malware
+
+<img src="Assets/08_ImageTargets/Malware_Card_NoBorder.png" alt="Malware image tracking card" width="190" />
+
+Malicious software that can disrupt, damage, or compromise devices and data. **Planned 3D concept:** a bug moving around a computer.
+
+</td>
+</tr>
+<tr>
+<td width="50%" align="center" valign="top">
+
+### 🔐 Ransomware
+
+<img src="Assets/08_ImageTargets/Ransomware_Card_NoBorder.png" alt="Ransomware image tracking card" width="190" />
+
+Malware that locks or encrypts files and demands payment. **Planned 3D concept:** a safe with an automatically closing padlock.
+
+</td>
+<td width="50%" align="center" valign="top">
+
+### 📱 Learning Experience
+
+**1. Scan** a threat card  
+**2. Discover** its 3D illustration  
+**3. Explore** the explanation  
+**4. Interact** with the object  
+**5. Check** understanding through a quiz
+
+*Steps 3–5 describe the intended final experience.*
+
+</td>
+</tr>
+</table>
+
+## Key Features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### AR & Interaction
+
+- **Three-card image tracking** — identify phishing, malware, and ransomware cards. ✅ Foundation tested
+- **Context-aware 3D objects** — display a different object for each card. ✅ Placeholder stage tested
+- **Threat animations** — visualize cyberattacks through motion. 🔧 Planned
+- **Tap & highlight** — interact with selected 3D objects. 🔧 Planned
+- **Pinch & rotate** — scale and rotate models through touch gestures. 🔧 Planned
+
+</td>
+<td width="50%" valign="top">
+
+### Education & Assessment
+
+- **Threat information** — definitions, real-world examples, and prevention tips. 🔧 Planned
+- **Contextual quizzes** — questions matched to the scanned threat. 🔧 Planned
+- **Answer feedback** — color-coded responses and explanations. 🔧 Planned
+- **Reset & rescan** — reset the experience for another card. 🔧 Planned
+
+</td>
+</tr>
+</table>
+
+## How It Works
 
 ```mermaid
-flowchart LR
-    A[Open Android app] --> B[Scan threat card]
-    B --> C[View animated 3D threat]
-    C --> D[Tap object and read guidance]
-    D --> E[Take contextual quiz]
-    E --> F[See feedback and score]
-    F --> G[Reset and scan again]
+flowchart TD
+    A[Android Camera] --> B[ARCore and AR Foundation]
+    B --> C{Recognized threat card}
+    C --> D[Phishing content]
+    C --> E[Malware content]
+    C --> F[Ransomware content]
+    D --> G[Interactive 3D learning experience]
+    E --> G
+    F --> G
+    G --> H[Educational content and quiz]
 ```
 
-## 🧰 Planned Tech Stack
+*The image recognition and three placeholder mappings are implemented. Interactive learning layers are part of the planned application.*
 
-| Component | Technology | Purpose |
-| :--- | :--- | :--- |
-| Game engine | Unity **2022.3.62f3** | Application development |
-| Programming | **C#** | Interactions and application logic |
-| AR framework | **AR Foundation 5.1** | Image tracking and AR integration |
-| Android AR provider | **ARCore XR Plugin 5.1** | AR capabilities on supported Android devices |
-| Rendering | **Universal Render Pipeline (URP)** | Mobile-oriented 3D rendering |
+## Technology
 
-## 📁 Planned Project Structure
+| Category | Technology |
+|---|---|
+| Development engine | Unity 2022.3.62f3 LTS |
+| Render pipeline | Universal Render Pipeline (URP) |
+| AR framework | AR Foundation 5.2.2 |
+| Android AR provider | Google ARCore XR Plugin 5.2.2 |
+| Programming language | C# |
+| Image recognition | AR Tracked Image Manager + XR Reference Image Library |
+| Android configuration | OpenGLES3 · IL2CPP · ARM64 · minimum API 24 |
+
+## Project Structure
 
 ```text
-Cyber-Threat-AR/
-├── Assets/
-│   ├── 01_Scenes/
-│   ├── 02_Scripts/
-│   ├── 03_Prefabs/
-│   ├── 04_Models/
-│   ├── 05_Animations/
-│   ├── 06_Materials/
-│   ├── 07_Textures/
-│   ├── 08_ImageTargets/
-│   ├── 09_UI/
-│   └── 10_Data/
-├── Packages/
-├── ProjectSettings/
-├── .gitattributes
-├── .gitignore
-└── README.md
+Assets/
+├── 01_Scenes/         # Unity scenes
+├── 02_Scripts/        # C# logic
+├── 03_Prefabs/        # Reusable objects and AR content
+├── 04_Models/         # 3D assets
+├── 05_Animations/     # Animation assets
+├── 06_Materials/      # Materials and shaders
+├── 07_Textures/       # Texture assets
+├── 08_ImageTargets/   # Threat cards and image library
+├── 09_UI/             # User interface assets
+├── 10_Data/           # Educational and quiz data
+└── Settings/          # URP configuration
+Packages/
+ProjectSettings/
 ```
 
-The folder structure above is a **target organization**. Generated Unity folders such as `Library/` and `Temp/` should not be committed.
+## Foundation Validation
 
-## 👥 Development Team
+<table>
+<tr>
+<td width="50%" valign="top">
 
-**Group 9 — AR/VR Course Project**
+### ✅ Configuration Verified
 
-| Member | Student ID |
-| :--- | :--- |
-| Dimas Reginald Bhamakerti | F551 24 055 |
-| Randy Raditya | F551 24 072 |
-| Triyanti Aulia | F551 24 073 |
-| Moh. Nabil Syaputra | F551 24 079 |
+- Android build and ARCore setup
+- XR Origin, AR Session, and AR Camera
+- URP AR background rendering
+- Three-card reference image library
+- Image-to-prefab mapping script
+- XR Project Validation: **0 issues**
 
-## 📝 Roadmap
+</td>
+<td width="50%" valign="top">
 
-- [ ] Set up the Unity URP project and AR Foundation / ARCore packages.
-- [ ] Prepare the three image-tracking cards.
-- [ ] Build animated phishing, malware, and ransomware prefabs.
-- [ ] Implement tapping, highlighting, scaling, and rotation.
-- [ ] Create educational panels and contextual quizzes.
-- [ ] Test tracking, interaction, and usability on Android.
-- [ ] Add installation instructions, screenshots, and a demo video.
+### ✅ Device Tests Passed
 
-## 📄 Assets & Usage
+- **Phishing** → blue cube
+- **Malware** → red cube
+- **Ransomware** → gold cube
+- Objects follow tracked cards
+- Objects hide when tracking is lost and reappear after tracking resumes
 
-Third-party models, textures, and audio (if used) will be credited according to their individual licenses. **No open-source license has been selected for this repository yet.** Please contact the team before reusing project code or assets.
+*Tests used the cards displayed on a monitor; printed-card performance has not yet been independently verified.*
+
+</td>
+</tr>
+</table>
+
+## Development Status
+
+- [x] Establish Unity and Android AR environment
+- [x] Import three image targets and configure reference library
+- [x] Implement and validate placeholder tracking on Android
+- [x] Complete foundation configuration audit
+- [ ] Replace placeholders with animated threat-specific 3D scenes
+- [ ] Implement touch interaction and object manipulation
+- [ ] Add educational information panels
+- [ ] Implement contextual quizzes, feedback, and reset
+- [ ] Complete integrated testing and final demonstration
+
+## Academic Purpose & Asset Credits
+
+This project was created as an academic **Augmented Reality / Virtual Reality** assignment to explore interactive cybersecurity education.
+
+Third-party graphics, 3D models, textures, and animations remain subject to their respective licenses. Credits will be provided for externally sourced assets where required.
 
 ---
 
 <div align="center">
-
-**CYBER THREAT AR · Learn to recognize threats before they become incidents.**
-
+  <sub>CYBER THREAT AR · Learn to recognize digital threats before they become real problems.</sub>
 </div>

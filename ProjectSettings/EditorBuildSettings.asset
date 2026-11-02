@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01_Scenes/CyberThreatAR_Main.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: a69dec591db44dc409fb111c3903ca12,
+      type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 31b70a806ab9cc44db69b3b35a6cc0b1,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 8a04b0bbff0563d488c5f83db990dd63,
+      type: 2}
