@@ -1,0 +1,54 @@
+# Unity-generated and machine-specific folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Visual Studio / VS Code / Rider local settings
+.vs/
+.vscode/
+.idea/
+.gradle/
+
+# Generated IDE files
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity / IDE temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.orig
+*.log
+
+# Unity crash diagnostics
+sysinfo.txt
+
+# Gradle and Android build output
+*.apk
+*.aab
+*.unitypackage
+
+# OS-specific clutter
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Keep Unity asset metadata tracked: do NOT ignore *.meta
+# Keep Assets/, Packages/, and ProjectSettings/ tracked.
