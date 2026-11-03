@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imageManager: {fileID: 357848988}
-  phishingPrefab: {fileID: 1227122848931492627, guid: 44d64d7e342bd544daee7d521092532a,
+  phishingPrefab: {fileID: 4307891070595769692, guid: b7b6bc0ca930f4c49aaf29d41e18bfba,
     type: 3}
   malwarePrefab: {fileID: 1227122848931492627, guid: 411851a48a25f134484b56bb7f7c0d7a,
     type: 3}
