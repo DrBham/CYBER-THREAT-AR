@@ -25,7 +25,7 @@
 
 The project combines **image tracking**, **3D visualization**, and planned **interactive learning features** to connect everyday cybersecurity risks with memorable visual examples.
 
-> **Current status:** The Android AR foundation has been tested successfully with all three image targets and their corresponding placeholder objects. Final animated 3D scenes, touch interactions, educational pop-ups, and quizzes are planned and are **not yet presented as completed features**.
+> **Current status:** The Android AR foundation and three threat-specific animated 3D prefabs are implemented. Editor Play Mode validation and an Android ARM64 development build pass; final on-device ARCore validation of the refined models is still required. Touch interactions, educational pop-ups, and quizzes remain separate workstreams.
 
 ## Explore Three Cyber Threats
 
@@ -37,7 +37,7 @@ The project combines **image tracking**, **3D visualization**, and planned **int
 
 <img src="Assets/08_ImageTargets/Phishing_Card_NoBorder.png" alt="Phishing image tracking card" width="190" />
 
-Deceptive emails and messages that try to trick people into sharing sensitive information. **Planned 3D concept:** a hook pulling an envelope.
+Deceptive emails and messages that try to trick people into sharing sensitive information. **Implemented 3D visual:** an animated envelope with a continuous fishing hook and line.
 
 </td>
 <td width="50%" align="center" valign="top">
@@ -46,7 +46,7 @@ Deceptive emails and messages that try to trick people into sharing sensitive in
 
 <img src="Assets/08_ImageTargets/Malware_Card_NoBorder.png" alt="Malware image tracking card" width="190" />
 
-Malicious software that can disrupt, damage, or compromise devices and data. **Planned 3D concept:** a bug moving around a computer.
+Malicious software that can disrupt, damage, or compromise devices and data. **Implemented 3D visual:** a recognizable bug orbiting a desktop computer.
 
 </td>
 </tr>
@@ -57,7 +57,7 @@ Malicious software that can disrupt, damage, or compromise devices and data. **P
 
 <img src="Assets/08_ImageTargets/Ransomware_Card_NoBorder.png" alt="Ransomware image tracking card" width="190" />
 
-Malware that locks or encrypts files and demands payment. **Planned 3D concept:** a safe with an automatically closing padlock.
+Malware that locks or encrypts files and demands payment. **Implemented 3D visual:** a safe with a detailed animated padlock.
 
 </td>
 <td width="50%" align="center" valign="top">
@@ -85,8 +85,8 @@ Malware that locks or encrypts files and demands payment. **Planned 3D concept:*
 ### AR & Interaction
 
 - **Three-card image tracking** — identify phishing, malware, and ransomware cards. ✅ Foundation tested
-- **Context-aware 3D objects** — display a different object for each card. ✅ Placeholder stage tested
-- **Threat animations** — visualize cyberattacks through motion. 🔧 Planned
+- **Context-aware 3D objects** — display a different refined model for each card. ✅ Implemented
+- **Threat animations** — float, orbit, and lock motion with balanced two-second cycles. ✅ Implemented
 - **Tap & highlight** — interact with selected 3D objects. 🔧 Planned
 - **Pinch & rotate** — scale and rotate models through touch gestures. 🔧 Planned
 
@@ -119,7 +119,7 @@ flowchart TD
     G --> H[Educational content and quiz]
 ```
 
-*The image recognition and three placeholder mappings are implemented. Interactive learning layers are part of the planned application.*
+*Image recognition, three refined prefab mappings, and their animations are implemented. Interactive learning layers are separate planned work.*
 
 ## Technology
 
@@ -184,13 +184,25 @@ ProjectSettings/
 </tr>
 </table>
 
+## 3D Visualization & Animation Validation
+
+- `Threat_Phising.prefab`: continuous J-shaped hook mesh, fishing line, envelope materials, and looping float animation.
+- `Threat_Malware.prefab`: monitor stand/base, detailed bug silhouette, and looping orbit animation.
+- `Threat_Ransomware.prefab`: safe-door bolts, readable keyhole, metallic lock materials, and looping lock animation.
+- All three prefab roots spawn at local position zero, identity rotation, and unit scale under a simulated tracked-image parent.
+- Unity Console: no project compilation or runtime errors during final Play Mode checks.
+- Android development build: **Success** (IL2CPP, ARM64), generated as `CyberThreatAR-Development.apk` on 2026-11-08.
+- APK SHA-256: `B0295D18515E9319A19773CF09D2E8ED039DDF4FF04B1C99E78282DDFADBC124`.
+
+The APK build validates the Android build pipeline, not live tracking behavior. A physical ARCore-capable Android device must still verify camera permission, recognition of all three cards, tracking stability, visibility changes, scale, material appearance, and animation performance.
+
 ## Development Status
 
 - [x] Establish Unity and Android AR environment
 - [x] Import three image targets and configure reference library
 - [x] Implement and validate placeholder tracking on Android
 - [x] Complete foundation configuration audit
-- [ ] Replace placeholders with animated threat-specific 3D scenes
+- [x] Replace placeholders with animated threat-specific 3D scenes
 - [ ] Implement touch interaction and object manipulation
 - [ ] Add educational information panels
 - [ ] Implement contextual quizzes, feedback, and reset
