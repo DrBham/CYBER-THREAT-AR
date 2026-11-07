@@ -85,7 +85,9 @@ public class ThreatImageTracker : MonoBehaviour
 
         GameObject instance = Instantiate(prefab, image.transform);
         instance.transform.localPosition = Vector3.zero;
-        instance.transform.localRotation = Quaternion.identity;
+        // ARTrackedImage's surface normal is local +Y, while the threat prefabs
+        // are authored with their visible front facing local -Z.
+        instance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         spawnedObjects.Add(image.trackableId, instance);
 

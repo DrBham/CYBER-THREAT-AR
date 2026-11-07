@@ -189,10 +189,10 @@ ProjectSettings/
 - `Threat_Phising.prefab`: continuous J-shaped hook mesh, fishing line, envelope materials, and looping float animation.
 - `Threat_Malware.prefab`: monitor stand/base, detailed bug silhouette, and looping orbit animation.
 - `Threat_Ransomware.prefab`: safe-door bolts, readable keyhole, metallic lock materials, and looping lock animation.
-- All three prefab roots spawn at local position zero, identity rotation, and unit scale under a simulated tracked-image parent.
+- All three prefab roots spawn at local position zero, X +90 degrees, and unit scale so their local `-Z` front aligns with the tracked-image `+Y` surface normal.
 - Unity Console: no project compilation or runtime errors during final Play Mode checks.
 - Android development build: **Success** (IL2CPP, ARM64), generated as `CyberThreatAR-Development.apk` on 2026-11-08.
-- APK SHA-256: `B0295D18515E9319A19773CF09D2E8ED039DDF4FF04B1C99E78282DDFADBC124`.
+- APK SHA-256: `22576CD31E07018D482E5D787BDDE8810D836564EDA50A2F12AF561E788C8F71`.
 
 The APK build validates the Android build pipeline, not live tracking behavior. A physical ARCore-capable Android device must still verify camera permission, recognition of all three cards, tracking stability, visibility changes, scale, material appearance, and animation performance.
 
