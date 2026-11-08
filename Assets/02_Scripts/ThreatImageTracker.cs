@@ -6,6 +6,9 @@ using UnityEngine.XR.ARSubsystems;
 
 public class ThreatImageTracker : MonoBehaviour
 {
+    private static readonly Vector3 PhishingCenteredOffset
+        = new Vector3(0f, 0f, -0.0625f);
+
     private static readonly Vector3 RansomwareCenteredOffset
         = new Vector3(0f, 0f, -0.035f);
 
@@ -87,9 +90,13 @@ public class ThreatImageTracker : MonoBehaviour
         }
 
         GameObject instance = Instantiate(prefab, image.transform);
-        instance.transform.localPosition = imageName == "Ransomware"
-            ? RansomwareCenteredOffset
-            : Vector3.zero;
+        if (imageName == "Phishing")
+            instance.transform.localPosition = PhishingCenteredOffset;
+        else if (imageName == "Ransomware")
+            instance.transform.localPosition = RansomwareCenteredOffset;
+        else
+            instance.transform.localPosition = Vector3.zero;
+
         // ARTrackedImage's surface normal is local +Y, while the threat prefabs
         // are authored with their visible front facing local -Z.
         instance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
