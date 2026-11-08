@@ -7,7 +7,7 @@ using UnityEngine.XR.ARSubsystems;
 public class ThreatImageTracker : MonoBehaviour
 {
     private static readonly Vector3 PhishingCenteredOffset
-        = new Vector3(0f, 0f, -0.0625f);
+        = new Vector3(0.0025f, 0f, -0.0355f);
 
     private static readonly Vector3 RansomwareCenteredOffset
         = new Vector3(0f, 0f, -0.035f);

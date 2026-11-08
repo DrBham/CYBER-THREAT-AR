@@ -189,7 +189,7 @@ ProjectSettings/
 - `Threat_Phising.prefab`: continuous J-shaped hook mesh, fishing line, envelope materials, and looping float animation.
 - `Threat_Malware.prefab`: monitor stand/base, detailed bug silhouette, and looping orbit animation.
 - `Threat_Ransomware.prefab`: safe-door bolts, readable keyhole, metallic lock materials, and looping lock animation.
-- All three prefab roots spawn at X +90 degrees and unit scale so their local `-Z` front aligns with the tracked-image `+Y` surface normal; Phishing uses Z `-0.0625`, Malware uses local position zero, and Ransomware uses Z `-0.035` to center their visual bounds on the marker.
+- All three prefab roots spawn at X +90 degrees and unit scale so their local `-Z` front aligns with the tracked-image `+Y` surface normal; Phishing uses `(X 0.0025, Z -0.0355)` to overlay its 3D envelope on the printed envelope, Malware uses local position zero, and Ransomware uses Z `-0.035` to center its visual bounds on the marker.
 - Unity Console: no project compilation or runtime errors during final Play Mode checks.
 - Android development build: **Success** (IL2CPP, ARM64), generated as `CyberThreatAR-Development.apk` on 2026-11-08.
 - APK SHA-256: `22576CD31E07018D482E5D787BDDE8810D836564EDA50A2F12AF561E788C8F71`.
