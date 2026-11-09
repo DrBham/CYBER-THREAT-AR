@@ -95,10 +95,10 @@ Malware that locks or encrypts files and demands payment. **Implemented 3D visua
 
 ### Education & Assessment
 
-- **Threat information** — definitions, real-world examples, and prevention tips. 🔧 Planned
+- **Threat information** — definitions, real-world examples, and prevention tips. ✅ Implemented
 - **Contextual quizzes** — questions matched to the scanned threat. 🔧 Planned
 - **Answer feedback** — color-coded responses and explanations. 🔧 Planned
-- **Reset & rescan** — reset the experience for another card. 🔧 Planned
+- **Reset & rescan** — close education state and restore object interaction transforms. ✅ Implemented
 
 </td>
 </tr>
@@ -205,6 +205,16 @@ The APK build validates the Android build pipeline, not live tracking behavior. 
 - `ThreatInteractionManager.Instance.ResetInteractions()` is the integration point for the Reset/Pindai Ulang button.
 - Android touch behavior still requires final validation on a physical device; no Android build was run for this interaction checkpoint.
 
+## Education UI & Reset Validation
+
+- Runtime uGUI panel uses Screen Space Overlay, safe-area anchors, CanvasScaler, GraphicRaycaster, and an EventSystem without modifying the shared scene.
+- Phishing, Malware, and Ransomware each provide a name, definition, real-world example, and prevention guidance from `ThreatEducationCatalog`.
+- Tap integration opens context-matched content through `ThreatInteractionEvents.ThreatTapped`; losing the selection closes the matching panel.
+- The ScrollRect hierarchy includes a masked Viewport and vertically fitted Content container for smaller mobile screens.
+- Uji Pemahaman emits `ThreatEducationEvents.QuizRequested(threatId)` for Nabil's quiz implementation.
+- Reset/Pindai Ulang closes the panel, restores object interaction transforms, clears highlight, and emits `ThreatEducationEvents.ResetRequested` for quiz reset integration.
+- Play Mode hierarchy, content switching, button callbacks, and reset lifecycle passed without Console errors; physical Android safe-area and touch validation remain required.
+
 ## Development Status
 
 - [x] Establish Unity and Android AR environment
@@ -213,7 +223,7 @@ The APK build validates the Android build pipeline, not live tracking behavior. 
 - [x] Complete foundation configuration audit
 - [x] Replace placeholders with animated threat-specific 3D scenes
 - [x] Implement touch interaction and object manipulation
-- [ ] Add educational information panels
+- [x] Add educational information panels and reset/rescan flow
 - [ ] Implement contextual quizzes, feedback, and reset
 - [ ] Complete integrated testing and final demonstration
 

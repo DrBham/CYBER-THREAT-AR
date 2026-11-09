@@ -30,6 +30,11 @@ public class ThreatImageTracker : MonoBehaviour
         interactionManager = GetComponent<ThreatInteractionManager>();
         if (interactionManager == null)
             interactionManager = gameObject.AddComponent<ThreatInteractionManager>();
+
+        ThreatEducationPanelController educationPanel
+            = GetComponent<ThreatEducationPanelController>();
+        if (educationPanel == null)
+            gameObject.AddComponent<ThreatEducationPanelController>();
     }
 
     private void OnEnable()
