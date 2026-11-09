@@ -96,8 +96,8 @@ Malware that locks or encrypts files and demands payment. **Implemented 3D visua
 ### Education & Assessment
 
 - **Threat information** — definitions, real-world examples, and prevention tips. ✅ Implemented
-- **Contextual quizzes** — questions matched to the scanned threat. 🔧 Planned
-- **Answer feedback** — color-coded responses and explanations. 🔧 Planned
+- **Contextual quizzes** — three questions matched to each scanned threat, with four A–D choices. ✅ Implemented
+- **Answer feedback** — green/red responses, explanations, running score, and final results. ✅ Implemented
 - **Reset & rescan** — close education state and restore object interaction transforms. ✅ Implemented
 
 </td>
@@ -119,7 +119,7 @@ flowchart TD
     G --> H[Educational content and quiz]
 ```
 
-*Image recognition, three refined prefab mappings, and their animations are implemented. Interactive learning layers are separate planned work.*
+*Image recognition, refined 3D prefabs, object interaction, education panels, contextual quizzes, feedback, scoring, and reset integration are implemented. Final validation on a physical Android device remains required.*
 
 ## Technology
 
@@ -145,8 +145,8 @@ Assets/
 ├── 06_Materials/      # Materials and shaders
 ├── 07_Textures/       # Texture assets
 ├── 08_ImageTargets/   # Threat cards and image library
-├── 09_UI/             # User interface assets
-├── 10_Data/           # Educational and quiz data
+├── 09_UI/             # Reserved for reusable UI assets; current panels are generated at runtime
+├── 10_Data/           # Reserved for external data assets; current education/quiz data lives in scripts
 └── Settings/          # URP configuration
 Packages/
 ProjectSettings/
@@ -211,9 +211,27 @@ The APK build validates the Android build pipeline, not live tracking behavior. 
 - Phishing, Malware, and Ransomware each provide a name, definition, real-world example, and prevention guidance from `ThreatEducationCatalog`.
 - Tap integration opens context-matched content through `ThreatInteractionEvents.ThreatTapped`; losing the selection closes the matching panel.
 - The ScrollRect hierarchy includes a masked Viewport and vertically fitted Content container for smaller mobile screens.
-- Uji Pemahaman emits `ThreatEducationEvents.QuizRequested(threatId)` for Nabil's quiz implementation.
+- Uji Pemahaman emits `ThreatEducationEvents.QuizRequested(threatId)` and opens the matching `ThreatQuizController` flow.
 - Reset/Pindai Ulang closes the panel, restores object interaction transforms, clears highlight, and emits `ThreatEducationEvents.ResetRequested` for quiz reset integration.
 - Play Mode hierarchy, content switching, button callbacks, and reset lifecycle passed without Console errors; physical Android safe-area and touch validation remain required.
+
+## Contextual Quiz Validation
+
+- `ThreatQuizCatalog` contains three complete questions for each of Phishing, Malware, and Ransomware; every question has four A–D choices, one validated answer, and an explanation.
+- `ThreatQuizController` is attached to `XR Origin` at runtime and builds a separate Screen Space Overlay Canvas without changing the shared scene or creating a UI prefab.
+- The quiz uses safe-area anchors, CanvasScaler, GraphicRaycaster, one EventSystem, and a masked vertical ScrollRect for smaller screens.
+- Correct choices turn green; incorrect choices turn red while the correct choice is shown in green. Each answer displays an explanation and updates the score.
+- Completing the third question opens a result view with final score, performance guidance, Ulangi Kuis, Kembali ke Informasi, and Reset/Pindai Ulang actions.
+- Play Mode passed the full open → answer → feedback → next → result → retry → return flow for all three threats. Quiz and education reset integration also passed with no Console errors.
+- Game View screenshots verified the question/feedback and final-result layouts in the Editor. Final portrait safe-area, Android touch input, and AR camera-overlay behavior still require a physical Android device.
+
+## Feature Integration Ownership
+
+| Area | Main runtime components | Implemented behavior |
+|---|---|---|
+| Randy — Object interaction | `ThreatInteractionManager`, `ThreatInteractable`, `ThreatInteractionEvents` | Tap selection, highlight, collider setup, bounded pinch scaling, two-finger rotation, reset transform, and education-panel tap event. |
+| Triyanti — Education UI/reset | `ThreatEducationContent`, `ThreatEducationEvents`, `ThreatEducationPanelController` | Contextual threat information, responsive panel, Uji Pemahaman entry point, panel close, and Reset/Pindai Ulang integration. |
+| Nabil — Contextual quiz | `ThreatQuizContent`, `ThreatQuizEvents`, `ThreatQuizController` | Threat-specific A–D questions, answer feedback, explanations, scoring, results, retry, return, and reset integration. |
 
 ## Development Status
 
@@ -224,7 +242,7 @@ The APK build validates the Android build pipeline, not live tracking behavior. 
 - [x] Replace placeholders with animated threat-specific 3D scenes
 - [x] Implement touch interaction and object manipulation
 - [x] Add educational information panels and reset/rescan flow
-- [ ] Implement contextual quizzes, feedback, and reset
+- [x] Implement contextual quizzes, feedback, scoring, results, and reset integration
 - [ ] Complete integrated testing and final demonstration
 
 ## Academic Purpose & Asset Credits

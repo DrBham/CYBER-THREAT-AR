@@ -102,8 +102,13 @@ public class ThreatEducationPanelController : MonoBehaviour
 
     public void RequestQuiz()
     {
-        if (!string.IsNullOrEmpty(currentThreatId))
-            ThreatEducationEvents.RaiseQuizRequested(currentThreatId);
+        if (string.IsNullOrEmpty(currentThreatId))
+            return;
+
+        string threatId = currentThreatId;
+        ThreatEducationEvents.RaiseQuizRequested(threatId);
+        if (ThreatQuizController.Instance != null && ThreatQuizController.Instance.IsOpen)
+            ClosePanel(false);
     }
 
     public void ResetAndRescan()
