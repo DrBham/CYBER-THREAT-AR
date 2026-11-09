@@ -35,6 +35,10 @@ public class ThreatImageTracker : MonoBehaviour
             = GetComponent<ThreatEducationPanelController>();
         if (educationPanel == null)
             gameObject.AddComponent<ThreatEducationPanelController>();
+
+        ThreatQuizController quizController = GetComponent<ThreatQuizController>();
+        if (quizController == null)
+            gameObject.AddComponent<ThreatQuizController>();
     }
 
     private void OnEnable()
