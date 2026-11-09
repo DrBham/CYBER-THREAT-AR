@@ -20,8 +20,17 @@ public class ThreatImageTracker : MonoBehaviour
     [SerializeField] private GameObject malwarePrefab;
     [SerializeField] private GameObject ransomwarePrefab;
 
+    private ThreatInteractionManager interactionManager;
+
     private readonly Dictionary<TrackableId, GameObject> spawnedObjects
         = new Dictionary<TrackableId, GameObject>();
+
+    private void Awake()
+    {
+        interactionManager = GetComponent<ThreatInteractionManager>();
+        if (interactionManager == null)
+            interactionManager = gameObject.AddComponent<ThreatInteractionManager>();
+    }
 
     private void OnEnable()
     {
@@ -100,6 +109,12 @@ public class ThreatImageTracker : MonoBehaviour
         // ARTrackedImage's surface normal is local +Y, while the threat prefabs
         // are authored with their visible front facing local -Z.
         instance.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+        ThreatInteractable interactable = instance.GetComponent<ThreatInteractable>();
+        if (interactable == null)
+            interactable = instance.AddComponent<ThreatInteractable>();
+
+        interactable.Initialize(imageName, interactionManager);
 
         spawnedObjects.Add(image.trackableId, instance);
 
