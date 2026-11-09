@@ -87,8 +87,8 @@ Malware that locks or encrypts files and demands payment. **Implemented 3D visua
 - **Three-card image tracking** — identify phishing, malware, and ransomware cards. ✅ Foundation tested
 - **Context-aware 3D objects** — display a different refined model for each card. ✅ Implemented
 - **Threat animations** — float, orbit, and lock motion with balanced two-second cycles. ✅ Implemented
-- **Tap & highlight** — interact with selected 3D objects. 🔧 Planned
-- **Pinch & rotate** — scale and rotate models through touch gestures. 🔧 Planned
+- **Tap & highlight** — select any tracked threat with a URP-safe highlight. ✅ Implemented
+- **Pinch & rotate** — bounded pinch scaling and two-finger 360° twist rotation. ✅ Implemented
 
 </td>
 <td width="50%" valign="top">
@@ -196,6 +196,15 @@ ProjectSettings/
 
 The APK build validates the Android build pipeline, not live tracking behavior. A physical ARCore-capable Android device must still verify camera permission, recognition of all three cards, tracking stability, visibility changes, scale, material appearance, and animation performance.
 
+## Object Interaction Validation
+
+- `ThreatInteractionManager` is attached to `XR Origin` at runtime without changing the shared scene.
+- Every spawned threat receives a renderer-sized `BoxCollider` and `ThreatInteractable` component at runtime.
+- Tap raycasts, selection highlight, bounded scaling (`0.6x`–`1.8x`), two-finger twist rotation, and transform reset passed Play Mode checks for Phishing, Malware, and Ransomware.
+- `ThreatInteractionEvents.ThreatTapped` exposes the selected threat ID and GameObject for the education panel integration.
+- `ThreatInteractionManager.Instance.ResetInteractions()` is the integration point for the Reset/Pindai Ulang button.
+- Android touch behavior still requires final validation on a physical device; no Android build was run for this interaction checkpoint.
+
 ## Development Status
 
 - [x] Establish Unity and Android AR environment
@@ -203,7 +212,7 @@ The APK build validates the Android build pipeline, not live tracking behavior. 
 - [x] Implement and validate placeholder tracking on Android
 - [x] Complete foundation configuration audit
 - [x] Replace placeholders with animated threat-specific 3D scenes
-- [ ] Implement touch interaction and object manipulation
+- [x] Implement touch interaction and object manipulation
 - [ ] Add educational information panels
 - [ ] Implement contextual quizzes, feedback, and reset
 - [ ] Complete integrated testing and final demonstration
