@@ -16,6 +16,7 @@ public class ThreatInteractionManager : MonoBehaviour
     [Header("Gesture")]
     [SerializeField, Min(0.01f)] private float pinchSensitivity = 1f;
     [SerializeField, Min(0.01f)] private float twistSensitivity = 1f;
+    [SerializeField, Min(0.01f)] private float dragRotationSensitivity = 0.2f;
 
     [Header("Editor Mouse Fallback")]
     [SerializeField, Min(0.01f)] private float mouseScaleStep = 0.12f;
@@ -29,6 +30,7 @@ public class ThreatInteractionManager : MonoBehaviour
     private int tapFingerId = -1;
     private Vector2 tapStartPosition;
     private bool tapMoved;
+    private bool tapStartedOverUi;
     private bool twoFingerGestureActive;
 
     public static ThreatInteractionManager Instance { get; private set; }
@@ -145,39 +147,13 @@ public class ThreatInteractionManager : MonoBehaviour
 
     public bool SelectAtScreenPosition(Vector2 screenPosition, bool notifyTap = true)
     {
-        ResolveCamera();
-        if (interactionCamera == null)
-            return false;
-
-        Ray ray = interactionCamera.ScreenPointToRay(screenPosition);
-        int hitCount = Physics.RaycastNonAlloc(
-            ray,
-            raycastHits,
-            maximumRayDistance,
-            Physics.DefaultRaycastLayers,
-            QueryTriggerInteraction.Ignore);
-
-        ThreatInteractable nearestTarget = null;
-        float nearestDistance = float.PositiveInfinity;
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            ThreatInteractable target = raycastHits[i].collider
-                .GetComponentInParent<ThreatInteractable>();
-            if (target == null || raycastHits[i].distance >= nearestDistance)
-                continue;
-
-            nearestTarget = target;
-            nearestDistance = raycastHits[i].distance;
-        }
-
-        if (nearestTarget == null)
+        if (!TryGetInteractableAtScreenPosition(screenPosition, out ThreatInteractable target))
         {
             DeselectCurrent();
             return false;
         }
 
-        SelectInteractable(nearestTarget, notifyTap);
+        SelectInteractable(target, notifyTap);
         return true;
     }
 
@@ -185,9 +161,15 @@ public class ThreatInteractionManager : MonoBehaviour
     {
         if (Input.touchCount >= 2)
         {
+            Touch first = Input.GetTouch(0);
+            Touch second = Input.GetTouch(1);
+
+            if (!twoFingerGestureActive || selectedTarget == null)
+                TrySelectTwoFingerTarget(first, second);
+
             twoFingerGestureActive = true;
             tapFingerId = -1;
-            HandleTwoFingerGesture(Input.GetTouch(0), Input.GetTouch(1));
+            HandleTwoFingerGesture(first, second);
             return;
         }
 
@@ -207,6 +189,16 @@ public class ThreatInteractionManager : MonoBehaviour
             tapFingerId = touch.fingerId;
             tapStartPosition = touch.position;
             tapMoved = false;
+            tapStartedOverUi = EventSystem.current != null
+                && EventSystem.current.IsPointerOverGameObject(touch.fingerId);
+
+            if (!tapStartedOverUi
+                && TryGetInteractableAtScreenPosition(
+                    touch.position,
+                    out ThreatInteractable touchedTarget))
+            {
+                SelectInteractable(touchedTarget, false);
+            }
         }
         else if (touch.fingerId == tapFingerId
             && (touch.position - tapStartPosition).sqrMagnitude
@@ -215,16 +207,67 @@ public class ThreatInteractionManager : MonoBehaviour
             tapMoved = true;
         }
 
+        if (touch.fingerId == tapFingerId
+            && tapMoved
+            && !tapStartedOverUi
+            && selectedTarget != null
+            && touch.phase == TouchPhase.Moved)
+        {
+            selectedTarget.RotateAroundMarkerNormal(
+                -touch.deltaPosition.x * dragRotationSensitivity);
+        }
+
         if (touch.phase != TouchPhase.Ended || touch.fingerId != tapFingerId)
             return;
 
-        bool overUi = EventSystem.current != null
-            && EventSystem.current.IsPointerOverGameObject(touch.fingerId);
-
-        if (!tapMoved && !overUi)
+        if (!tapMoved && !tapStartedOverUi)
             SelectAtScreenPosition(touch.position);
 
         tapFingerId = -1;
+        tapStartedOverUi = false;
+    }
+
+    private bool TryGetInteractableAtScreenPosition(
+        Vector2 screenPosition,
+        out ThreatInteractable nearestTarget)
+    {
+        nearestTarget = null;
+        ResolveCamera();
+        if (interactionCamera == null)
+            return false;
+
+        Ray ray = interactionCamera.ScreenPointToRay(screenPosition);
+        int hitCount = Physics.RaycastNonAlloc(
+            ray,
+            raycastHits,
+            maximumRayDistance,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Ignore);
+
+        float nearestDistance = float.PositiveInfinity;
+        for (int i = 0; i < hitCount; i++)
+        {
+            ThreatInteractable target = raycastHits[i].collider
+                .GetComponentInParent<ThreatInteractable>();
+            if (target == null || raycastHits[i].distance >= nearestDistance)
+                continue;
+
+            nearestTarget = target;
+            nearestDistance = raycastHits[i].distance;
+        }
+
+        return nearestTarget != null;
+    }
+
+    private void TrySelectTwoFingerTarget(Touch first, Touch second)
+    {
+        Vector2 midpoint = (first.position + second.position) * 0.5f;
+        if (TryGetInteractableAtScreenPosition(midpoint, out ThreatInteractable target)
+            || TryGetInteractableAtScreenPosition(first.position, out target)
+            || TryGetInteractableAtScreenPosition(second.position, out target))
+        {
+            SelectInteractable(target, false);
+        }
     }
 
     private void HandleTwoFingerGesture(Touch first, Touch second)
