@@ -32,10 +32,22 @@ public class ThreatInteractionManager : MonoBehaviour
     private bool tapMoved;
     private bool tapStartedOverUi;
     private bool twoFingerGestureActive;
+    private bool suppressUntilRelease;
+    private ThreatInteractable gestureTarget;
 
     public static ThreatInteractionManager Instance { get; private set; }
     public ThreatInteractable SelectedTarget => selectedTarget;
     public int RegisteredTargetCount => registeredTargets.Count;
+    public ThreatInteractable VisibleTarget
+    {
+        get
+        {
+            if (selectedTarget != null && selectedTarget.gameObject.activeInHierarchy) return selectedTarget;
+            foreach (var target in registeredTargets)
+                if (target != null && target.gameObject.activeInHierarchy) return target;
+            return null;
+        }
+    }
 
     private void Awake()
     {
@@ -56,6 +68,23 @@ public class ThreatInteractionManager : MonoBehaviour
         if (selectedTarget != null && !selectedTarget.gameObject.activeInHierarchy)
             DeselectCurrent();
 
+        bool modalOpen = (ThreatEducationPanelController.Instance != null && ThreatEducationPanelController.Instance.IsOpen)
+            || (ThreatQuizController.Instance != null && ThreatQuizController.Instance.IsOpen);
+        if (modalOpen)
+        {
+            suppressUntilRelease = true;
+            tapFingerId = -1;
+            gestureTarget = null;
+            tapStartedOverUi = false;
+            twoFingerGestureActive = false;
+            return;
+        }
+        if (suppressUntilRelease)
+        {
+            if (Input.touchCount == 0 && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+                suppressUntilRelease = false;
+            return;
+        }
         HandleTouchInput();
         HandleMouseInput();
     }
@@ -164,12 +193,20 @@ public class ThreatInteractionManager : MonoBehaviour
             Touch first = Input.GetTouch(0);
             Touch second = Input.GetTouch(1);
 
-            if (!twoFingerGestureActive || selectedTarget == null)
-                TrySelectTwoFingerTarget(first, second);
+            if (!twoFingerGestureActive)
+            {
+                bool overUi = IsOverUi(first.fingerId) || IsOverUi(second.fingerId) || tapStartedOverUi;
+                gestureTarget = null;
+                if (!overUi) TrySelectTwoFingerTarget(first, second);
+            }
 
             twoFingerGestureActive = true;
             tapFingerId = -1;
-            HandleTwoFingerGesture(first, second);
+            if (first.phase != TouchPhase.Began && second.phase != TouchPhase.Began
+                && first.phase != TouchPhase.Ended && second.phase != TouchPhase.Ended
+                && first.phase != TouchPhase.Canceled && second.phase != TouchPhase.Canceled
+                && !IsOverUi(first.fingerId) && !IsOverUi(second.fingerId))
+                HandleTwoFingerGesture(first, second);
             return;
         }
 
@@ -177,6 +214,8 @@ public class ThreatInteractionManager : MonoBehaviour
         {
             twoFingerGestureActive = false;
             tapFingerId = -1;
+            tapStartedOverUi = false;
+            gestureTarget = null;
             return;
         }
 
@@ -189,6 +228,7 @@ public class ThreatInteractionManager : MonoBehaviour
             tapFingerId = touch.fingerId;
             tapStartPosition = touch.position;
             tapMoved = false;
+            gestureTarget = null;
             tapStartedOverUi = EventSystem.current != null
                 && EventSystem.current.IsPointerOverGameObject(touch.fingerId);
 
@@ -197,6 +237,7 @@ public class ThreatInteractionManager : MonoBehaviour
                     touch.position,
                     out ThreatInteractable touchedTarget))
             {
+                gestureTarget = touchedTarget;
                 SelectInteractable(touchedTarget, false);
             }
         }
@@ -210,17 +251,18 @@ public class ThreatInteractionManager : MonoBehaviour
         if (touch.fingerId == tapFingerId
             && tapMoved
             && !tapStartedOverUi
-            && selectedTarget != null
+            && gestureTarget != null && gestureTarget.gameObject.activeInHierarchy
+            && !IsOverUi(touch.fingerId)
             && touch.phase == TouchPhase.Moved)
         {
-            selectedTarget.RotateAroundMarkerNormal(
+            gestureTarget.RotateAroundMarkerNormal(
                 -touch.deltaPosition.x * dragRotationSensitivity);
         }
 
         if (touch.phase != TouchPhase.Ended || touch.fingerId != tapFingerId)
             return;
 
-        if (!tapMoved && !tapStartedOverUi)
+        if (!tapMoved && !tapStartedOverUi && !IsOverUi(touch.fingerId))
             SelectAtScreenPosition(touch.position);
 
         tapFingerId = -1;
@@ -266,13 +308,19 @@ public class ThreatInteractionManager : MonoBehaviour
             || TryGetInteractableAtScreenPosition(first.position, out target)
             || TryGetInteractableAtScreenPosition(second.position, out target))
         {
+            gestureTarget = target;
             SelectInteractable(target, false);
         }
     }
 
+    private static bool IsOverUi(int fingerId)
+    {
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(fingerId);
+    }
+
     private void HandleTwoFingerGesture(Touch first, Touch second)
     {
-        if (selectedTarget == null)
+        if (gestureTarget == null || !gestureTarget.gameObject.activeInHierarchy)
             return;
 
         Vector2 previousFirst = first.position - first.deltaPosition;
@@ -285,10 +333,10 @@ public class ThreatInteractionManager : MonoBehaviour
 
         float rawScaleFactor = currentVector.magnitude / previousVector.magnitude;
         float scaleFactor = Mathf.Pow(rawScaleFactor, pinchSensitivity);
-        selectedTarget.ApplyScaleFactor(scaleFactor);
+        gestureTarget.ApplyScaleFactor(scaleFactor);
 
         float twistAngle = Vector2.SignedAngle(previousVector, currentVector);
-        selectedTarget.RotateAroundMarkerNormal(-twistAngle * twistSensitivity);
+        gestureTarget.RotateAroundMarkerNormal(-twistAngle * twistSensitivity);
     }
 
     private void HandleMouseInput()
@@ -300,7 +348,7 @@ public class ThreatInteractionManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !overUi)
             SelectAtScreenPosition(Input.mousePosition);
 
-        if (selectedTarget == null)
+        if (selectedTarget == null || overUi)
             return;
 
         float scroll = Input.mouseScrollDelta.y;

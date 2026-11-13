@@ -9,13 +9,13 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class ThreatQuizController : MonoBehaviour
 {
-    private static readonly Color BackgroundColor = new Color32(7, 15, 29, 248);
-    private static readonly Color SurfaceColor = new Color32(18, 34, 55, 255);
-    private static readonly Color OptionColor = new Color32(37, 59, 82, 255);
+    private static readonly Color BackgroundColor = new Color32(8, 15, 28, 255);
+    private static readonly Color SurfaceColor = new Color32(17, 29, 46, 255);
+    private static readonly Color OptionColor = new Color32(25, 43, 64, 255);
     private static readonly Color PrimaryTextColor = new Color32(244, 249, 255, 255);
     private static readonly Color SecondaryTextColor = new Color32(174, 199, 220, 255);
-    private static readonly Color CorrectColor = new Color32(37, 166, 91, 255);
-    private static readonly Color IncorrectColor = new Color32(211, 62, 69, 255);
+    private static readonly Color CorrectColor = new Color32(18, 72, 52, 255);
+    private static readonly Color IncorrectColor = new Color32(104, 34, 48, 255);
 
     private readonly List<UnityEngine.UI.Button> answerButtons
         = new List<UnityEngine.UI.Button>();
@@ -23,6 +23,14 @@ public class ThreatQuizController : MonoBehaviour
         = new List<UnityEngine.UI.Text>();
 
     private Font runtimeFont;
+    private UnityEngine.UI.Image scoreRing;
+    private UnityEngine.UI.Text resultStats, resultRank;
+    private RectTransform actionRow;
+    private static Sprite ringSprite;
+    private static readonly Color[] AnswerPalette = { new Color32(34,57,92,255), new Color32(53,44,91,255), new Color32(19,68,76,255), new Color32(79,56,35,255) };
+    private UnityEngine.UI.Image progressFill;
+    private UnityEngine.UI.ScrollRect quizScroll;
+    private static readonly Color Cyan = new Color32(34, 211, 238, 255);
     private RectTransform safeAreaRect;
     private GameObject modalRoot;
     private UnityEngine.UI.Image panelImage;
@@ -118,9 +126,9 @@ public class ThreatQuizController : MonoBehaviour
 
         Color accent = GetAccentColor(threatId);
         accentBar.color = accent;
-        panelImage.color = Color.Lerp(SurfaceColor, accent, 0.07f);
-        SetButtonColor(nextButton, accent);
-        titleText.text = "KUIS " + threatId.ToUpperInvariant();
+        panelImage.color = BackgroundColor;
+        SetButtonColor(nextButton, Cyan);
+        titleText.text = "CYBER CHALLENGE / " + threatId.ToUpperInvariant();
 
         modalRoot.SetActive(true);
         modalRoot.transform.SetAsLastSibling();
@@ -146,9 +154,15 @@ public class ThreatQuizController : MonoBehaviour
         {
             answerButtons[i].interactable = false;
             if (i == question.CorrectOptionIndex)
+            {
                 SetButtonColor(answerButtons[i], CorrectColor);
+                answerLabels[i].text += "  [BENAR]";
+            }
             else if (i == optionIndex)
+            {
                 SetButtonColor(answerButtons[i], IncorrectColor);
+                answerLabels[i].text += "  [SALAH]";
+            }
         }
 
         feedbackPanel.SetActive(true);
@@ -157,12 +171,15 @@ public class ThreatQuizController : MonoBehaviour
             ? new Color32(196, 255, 218, 255)
             : new Color32(255, 214, 216, 255);
         scoreText.text = "Skor: " + score;
+        UpdateProgress(currentQuestionIndex + (hasAnswered ? 1 : 0));
 
         nextButton.gameObject.SetActive(true);
         SetButtonLabel(
             nextButton,
             currentQuestionIndex >= questions.Count - 1 ? "LIHAT HASIL" : "SOAL BERIKUTNYA");
 
+        Canvas.ForceUpdateCanvases();
+        if (quizScroll != null) quizScroll.verticalNormalizedPosition = 0f;
         ThreatQuizEvents.RaiseAnswerSubmitted(currentThreatId, currentQuestionIndex, correct);
         return correct;
     }
@@ -246,28 +263,33 @@ public class ThreatQuizController : MonoBehaviour
 
         showingResults = false;
         hasAnswered = false;
+        SetButtonColor(nextButton, Cyan);
+        nextButton.GetComponentInChildren<UnityEngine.UI.Text>().color = BackgroundColor;
         questionGroup.SetActive(true);
         resultGroup.SetActive(false);
         feedbackPanel.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        returnButton.gameObject.SetActive(true);
+        returnButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+        actionRow.gameObject.SetActive(false);
         SetButtonLabel(returnButton, "KEMBALI KE INFORMASI");
 
         ThreatQuizQuestion question = questions[currentQuestionIndex];
         progressText.text = "Soal " + (currentQuestionIndex + 1) + " dari " + questions.Count;
         scoreText.text = "Skor: " + score;
+        UpdateProgress(currentQuestionIndex + (hasAnswered ? 1 : 0));
         questionText.text = question.Prompt;
 
-        char optionLetter = 'A';
         for (int i = 0; i < answerButtons.Count; i++)
         {
             answerButtons[i].interactable = true;
             answerButtons[i].gameObject.SetActive(true);
-            SetButtonColor(answerButtons[i], OptionColor);
-            answerLabels[i].text = ((char)(optionLetter + i)) + ".  " + question.Options[i];
+            SetButtonColor(answerButtons[i], AnswerPalette[i]);
+            answerLabels[i].text = question.Options[i];
         }
 
         Canvas.ForceUpdateCanvases();
+        if (quizScroll != null) quizScroll.verticalNormalizedPosition = 1f;
     }
 
     private void ShowResults()
@@ -276,21 +298,32 @@ public class ThreatQuizController : MonoBehaviour
         questionGroup.SetActive(false);
         feedbackPanel.SetActive(false);
         nextButton.gameObject.SetActive(true);
-        returnButton.gameObject.SetActive(true);
+        returnButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(true);
+        actionRow.gameObject.SetActive(false);
+        SetButtonColor(nextButton, SurfaceColor);
+        nextButton.GetComponentInChildren<UnityEngine.UI.Text>().color = PrimaryTextColor;
+        SetButtonColor(resetButton, Cyan);
+        resetButton.GetComponentInChildren<UnityEngine.UI.Text>().color = BackgroundColor;
         resultGroup.SetActive(true);
 
         progressText.text = "Kuis selesai";
         scoreText.text = "Skor akhir";
-        resultTitleText.text = "HASIL KUIS " + currentThreatId.ToUpperInvariant();
+        resultTitleText.text = "ASSESSMENT COMPLETE / " + currentThreatId.ToUpperInvariant();
+        UpdateProgress(questions.Count);
         resultScoreText.text = score + " / " + questions.Count;
+        scoreRing.fillAmount = (float)score / questions.Count;
+        resultRank.text = score == questions.Count ? "Cyber Defender" : score * 2 >= questions.Count ? "Cyber Analyst" : "Cyber Learner";
+        resultStats.text = "Topik:  " + currentThreatId + "\n\nBenar:  " + score + "     |     Salah:  " + (questions.Count - score);
         resultMessageText.text = BuildResultMessage(score, questions.Count);
-        SetButtonLabel(nextButton, "ULANGI KUIS");
+        SetButtonLabel(nextButton, "ULANGI CHALLENGE");
         SetButtonLabel(returnButton, "KEMBALI KE INFORMASI");
         nextButton.onClick.RemoveListener(Advance);
         nextButton.onClick.AddListener(RestartFromResult);
 
         ThreatQuizEvents.RaiseQuizCompleted(currentThreatId, score, questions.Count);
         Canvas.ForceUpdateCanvases();
+        if (quizScroll != null) quizScroll.verticalNormalizedPosition = 1f;
     }
 
     private void RestartFromResult()
@@ -333,23 +366,23 @@ public class ThreatQuizController : MonoBehaviour
         UnityEngine.UI.Image overlay = CreateImage(
             "DimmedOverlay",
             modalRoot.transform,
-            new Color(0f, 0f, 0f, 0.76f));
+            BackgroundColor);
         Stretch(overlay.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
         panelImage = CreateImage("Panel", modalRoot.transform, BackgroundColor);
         RectTransform panelRect = panelImage.rectTransform;
         Stretch(
             panelRect,
-            new Vector2(0.045f, 0.035f),
-            new Vector2(0.955f, 0.965f),
+            new Vector2(0.025f, 0.025f),
+            new Vector2(0.975f, 0.975f),
             Vector2.zero,
             Vector2.zero);
         UnityEngine.UI.Outline outline = panelImage.gameObject.AddComponent<UnityEngine.UI.Outline>();
-        outline.effectColor = new Color(0.1f, 0.75f, 1f, 0.78f);
-        outline.effectDistance = new Vector2(2f, -2f);
+        outline.effectColor = new Color32(35, 58, 78, 255);
+        outline.effectDistance = new Vector2(1f, -1f);
 
         RectTransform header = CreateRect("Header", panelRect);
-        Stretch(header, new Vector2(0f, 1f), Vector2.one, new Vector2(30f, -120f), new Vector2(-30f, -18f));
+        Stretch(header, new Vector2(0f, 1f), Vector2.one, new Vector2(30f, -160f), new Vector2(-30f, -18f));
 
         accentBar = CreateImage("AccentBar", header, new Color32(22, 199, 255, 255));
         SetAnchoredRect(accentBar.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(6f, 0f), new Vector2(0f, 0.5f));
@@ -362,7 +395,7 @@ public class ThreatQuizController : MonoBehaviour
             PrimaryTextColor,
             TextAnchor.UpperLeft,
             FontStyle.Bold);
-        Stretch(titleText.rectTransform, new Vector2(0f, 0.42f), new Vector2(1f, 1f), new Vector2(24f, 0f), new Vector2(-88f, 0f));
+        Stretch(titleText.rectTransform, new Vector2(0f, 0.50f), new Vector2(1f, 1f), new Vector2(24f, 0f), new Vector2(-88f, 0f));
         titleText.resizeTextForBestFit = true;
         titleText.resizeTextMinSize = 24;
         titleText.resizeTextMaxSize = 40;
@@ -375,7 +408,7 @@ public class ThreatQuizController : MonoBehaviour
             SecondaryTextColor,
             TextAnchor.LowerLeft,
             FontStyle.Normal);
-        Stretch(progressText.rectTransform, Vector2.zero, new Vector2(0.65f, 0.5f), new Vector2(24f, 0f), Vector2.zero);
+        Stretch(progressText.rectTransform, Vector2.zero, new Vector2(0.65f, 0.5f), new Vector2(24f, 18f), Vector2.zero);
 
         scoreText = CreateText(
             "ScoreText",
@@ -385,7 +418,7 @@ public class ThreatQuizController : MonoBehaviour
             SecondaryTextColor,
             TextAnchor.LowerRight,
             FontStyle.Bold);
-        Stretch(scoreText.rectTransform, new Vector2(0.6f, 0f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(-88f, 0f));
+        Stretch(scoreText.rectTransform, new Vector2(0.6f, 0f), new Vector2(1f, 0.5f), new Vector2(0, 18), new Vector2(-88f, 0f));
 
         UnityEngine.UI.Button closeButton = CreateButton(
             "CloseButton",
@@ -397,21 +430,37 @@ public class ThreatQuizController : MonoBehaviour
             27);
         SetAnchoredRect(closeButton.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(68f, 68f), new Vector2(-34f, -34f));
         closeButton.onClick.AddListener(ReturnToEducation);
+        var progressTrack = CreateImage("ProgressTrack", header, new Color32(38, 60, 80, 255));
+        Stretch(progressTrack.rectTransform, Vector2.zero, new Vector2(1, 0), new Vector2(24, 0), new Vector2(-88, 8));
+        progressTrack.raycastTarget = false;
+        progressFill = CreateImage("ProgressFill", progressTrack.transform, Cyan);
+        Stretch(progressFill.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        progressFill.rectTransform.anchorMax = new Vector2(0, 1);
+        progressFill.raycastTarget = false;
 
         RectTransform footer = CreateRect("Footer", panelRect);
-        Stretch(footer, Vector2.zero, new Vector2(1f, 0f), new Vector2(30f, 20f), new Vector2(-30f, 138f));
-        UnityEngine.UI.HorizontalLayoutGroup footerLayout
-            = footer.gameObject.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+        Stretch(footer, Vector2.zero, new Vector2(1f, 0f), new Vector2(30f, 20f), new Vector2(-30f, 222f));
+        UnityEngine.UI.VerticalLayoutGroup footerLayout
+            = footer.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
         footerLayout.spacing = 14f;
-        footerLayout.childAlignment = TextAnchor.MiddleCenter;
+        footerLayout.childAlignment = TextAnchor.LowerCenter;
         footerLayout.childControlWidth = true;
         footerLayout.childControlHeight = true;
         footerLayout.childForceExpandWidth = true;
-        footerLayout.childForceExpandHeight = true;
+        footerLayout.childForceExpandHeight = false;
 
+        var secondaryActions = CreateRect("SecondaryActions", footer);
+        actionRow = secondaryActions;
+        var secondaryLayout = secondaryActions.gameObject.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+        secondaryLayout.spacing = 14;
+        secondaryLayout.childControlWidth = true;
+        secondaryLayout.childControlHeight = true;
+        secondaryLayout.childForceExpandWidth = true;
+        secondaryLayout.childForceExpandHeight = true;
+        AddLayout(secondaryActions.gameObject, 86f, 86f);
         returnButton = CreateButton(
             "ReturnButton",
-            footer,
+            secondaryActions,
             "KEMBALI KE INFORMASI",
             new Color32(49, 70, 92, 255),
             Color.white,
@@ -421,8 +470,8 @@ public class ThreatQuizController : MonoBehaviour
 
         resetButton = CreateButton(
             "ResetButton",
-            footer,
-            "RESET / PINDAI ULANG",
+            secondaryActions,
+            "KEMBALI KE SCANNER",
             new Color32(57, 72, 89, 255),
             Color.white,
             TextAnchor.MiddleCenter,
@@ -433,14 +482,16 @@ public class ThreatQuizController : MonoBehaviour
             "NextButton",
             footer,
             "SOAL BERIKUTNYA",
-            new Color32(22, 167, 217, 255),
-            Color.white,
+            Cyan,
+            BackgroundColor,
             TextAnchor.MiddleCenter,
             22);
         nextButton.onClick.AddListener(Advance);
+        nextButton.transform.SetAsFirstSibling();
+        AddLayout(nextButton.gameObject, 96f, 96f);
 
         RectTransform scrollView = CreateRect("ScrollView", panelRect);
-        Stretch(scrollView, Vector2.zero, Vector2.one, new Vector2(30f, 150f), new Vector2(-30f, -130f));
+        Stretch(scrollView, Vector2.zero, Vector2.one, new Vector2(30f, 20f), new Vector2(-30f, -174f));
         UnityEngine.UI.ScrollRect scrollRect
             = scrollView.gameObject.AddComponent<UnityEngine.UI.ScrollRect>();
         scrollRect.horizontal = false;
@@ -479,20 +530,29 @@ public class ThreatQuizController : MonoBehaviour
         fitter.verticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize;
         scrollRect.viewport = viewport.rectTransform;
         scrollRect.content = content;
+        quizScroll = scrollRect;
 
-        questionGroup = new GameObject("QuestionGroup", typeof(RectTransform));
+        questionGroup = CreateRect("QuestionGroup", content).gameObject;
         questionGroup.transform.SetParent(content, false);
         UnityEngine.UI.VerticalLayoutGroup questionLayout
             = questionGroup.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
-        questionLayout.spacing = 13f;
+        questionLayout.spacing = 20f;
+        questionLayout.padding = new RectOffset(4, 4, 8, 8);
         questionLayout.childAlignment = TextAnchor.UpperLeft;
         questionLayout.childControlWidth = true;
         questionLayout.childControlHeight = true;
         questionLayout.childForceExpandWidth = true;
         questionLayout.childForceExpandHeight = false;
+        var questionCard = CreateImage("PromptCard", questionGroup.transform, SurfaceColor);
+        var promptLayout = questionCard.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
+        promptLayout.padding = new RectOffset(24,24,22,26);
+        promptLayout.spacing = 12;
+        promptLayout.childControlWidth = promptLayout.childControlHeight = true;
+        promptLayout.childForceExpandWidth = true;
+        promptLayout.childForceExpandHeight = false;
         UnityEngine.UI.Text instruction = CreateText(
             "Instruction",
-            questionGroup.transform,
+            questionCard.transform,
             "PILIH SATU JAWABAN YANG PALING TEPAT",
             21,
             new Color32(83, 214, 255, 255),
@@ -502,9 +562,9 @@ public class ThreatQuizController : MonoBehaviour
 
         questionText = CreateText(
             "QuestionText",
-            questionGroup.transform,
+            questionCard.transform,
             string.Empty,
-            29,
+            36,
             PrimaryTextColor,
             TextAnchor.UpperLeft,
             FontStyle.Bold);
@@ -522,8 +582,18 @@ public class ThreatQuizController : MonoBehaviour
                 OptionColor,
                 PrimaryTextColor,
                 TextAnchor.MiddleLeft,
-                24);
-            AddLayout(answerButton.gameObject, 92f, 92f);
+                30);
+            AddLayout(answerButton.gameObject, 158f, 158f);
+            var letter = CreateImage("LetterCard", answerButton.transform, new Color32(8, 15, 28, 255));
+            SetAnchoredRect(letter.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(64, 64), new Vector2(50, 0));
+            letter.raycastTarget = false;
+            var letterText = CreateText("Letter", letter.transform, ((char)('A' + i)).ToString(), 30, PrimaryTextColor, TextAnchor.MiddleCenter, FontStyle.Bold);
+            Stretch(letterText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var answerLabel = answerButton.transform.Find("Label").GetComponent<UnityEngine.UI.Text>();
+            Stretch(answerLabel.rectTransform, Vector2.zero, Vector2.one, new Vector2(100, 14), new Vector2(-20, -14));
+            answerLabel.fontStyle = FontStyle.Normal;
+            answerLabel.resizeTextMaxSize = 30;
+            answerLabel.resizeTextMinSize = 22;
             answerButton.onClick.AddListener(() => SubmitAnswer(capturedIndex));
             answerButtons.Add(answerButton);
             answerLabels.Add(answerButton.transform.Find("Label").GetComponent<UnityEngine.UI.Text>());
@@ -532,7 +602,7 @@ public class ThreatQuizController : MonoBehaviour
         feedbackPanel = CreateImage(
             "FeedbackPanel",
             content,
-            new Color32(31, 53, 71, 255)).gameObject;
+            new Color32(25, 43, 64, 255)).gameObject;
         UnityEngine.UI.VerticalLayoutGroup feedbackLayout
             = feedbackPanel.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
         feedbackLayout.padding = new RectOffset(22, 22, 18, 18);
@@ -552,50 +622,83 @@ public class ThreatQuizController : MonoBehaviour
         feedbackText.verticalOverflow = VerticalWrapMode.Overflow;
         feedbackText.lineSpacing = 1.12f;
 
-        resultGroup = new GameObject("ResultGroup", typeof(RectTransform));
-        resultGroup.transform.SetParent(content, false);
-        UnityEngine.UI.VerticalLayoutGroup resultLayout
-            = resultGroup.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
-        resultLayout.spacing = 18f;
-        resultLayout.padding = new RectOffset(20, 20, 48, 48);
+        resultGroup = CreateRect("ResultGroup", content).gameObject;
+        var resultLayout = resultGroup.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
+        resultLayout.spacing = 22;
+        resultLayout.padding = new RectOffset(12, 12, 24, 16);
         resultLayout.childAlignment = TextAnchor.MiddleCenter;
-        resultLayout.childControlWidth = true;
-        resultLayout.childControlHeight = true;
+        resultLayout.childControlWidth = resultLayout.childControlHeight = true;
         resultLayout.childForceExpandWidth = true;
         resultLayout.childForceExpandHeight = false;
-        resultTitleText = CreateText(
-            "ResultTitle",
-            resultGroup.transform,
-            "HASIL KUIS",
-            30,
-            new Color32(83, 214, 255, 255),
-            TextAnchor.MiddleCenter,
-            FontStyle.Bold);
-        AddLayout(resultTitleText.gameObject, 52f, -1f);
-        resultScoreText = CreateText(
-            "ResultScore",
-            resultGroup.transform,
-            "0 / 3",
-            64,
-            PrimaryTextColor,
-            TextAnchor.MiddleCenter,
-            FontStyle.Bold);
-        AddLayout(resultScoreText.gameObject, 94f, -1f);
-        resultMessageText = CreateText(
-            "ResultMessage",
-            resultGroup.transform,
-            string.Empty,
-            27,
-            PrimaryTextColor,
-            TextAnchor.MiddleCenter,
-            FontStyle.Normal);
+        resultTitleText = CreateText("ResultTitle", resultGroup.transform, "ASSESSMENT COMPLETE", 27, Cyan, TextAnchor.MiddleCenter, FontStyle.Bold);
+        AddLayout(resultTitleText.gameObject, 60, 60);
+        var meter = CreateRect("ScoreMeter", resultGroup.transform);
+        AddLayout(meter.gameObject, 330, 330);
+        var track = CreateImage("RingTrack", meter, new Color32(38, 60, 80, 255));
+        SetAnchoredRect(track.rectTransform, new Vector2(.5f,.5f), new Vector2(.5f,.5f), new Vector2(300,300), Vector2.zero);
+        track.sprite = GetRingSprite();
+        scoreRing = CreateImage("ScoreRing", meter, Cyan);
+        SetAnchoredRect(scoreRing.rectTransform, new Vector2(.5f,.5f), new Vector2(.5f,.5f), new Vector2(300,300), Vector2.zero);
+        scoreRing.sprite = GetRingSprite();
+        scoreRing.type = UnityEngine.UI.Image.Type.Filled;
+        scoreRing.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
+        scoreRing.fillOrigin = (int)UnityEngine.UI.Image.Origin360.Top;
+        scoreRing.fillClockwise = true;
+        resultScoreText = CreateText("ResultScore", meter, "0 / 3", 76, PrimaryTextColor, TextAnchor.MiddleCenter, FontStyle.Bold);
+        SetAnchoredRect(resultScoreText.rectTransform, new Vector2(.5f,.5f), new Vector2(.5f,.5f), new Vector2(240,100), new Vector2(0,15));
+        var scoreCaption = CreateText("ScoreCaption", meter, "JAWABAN BENAR", 20, SecondaryTextColor, TextAnchor.MiddleCenter, FontStyle.Bold);
+        SetAnchoredRect(scoreCaption.rectTransform, new Vector2(.5f,.5f), new Vector2(.5f,.5f), new Vector2(240,42), new Vector2(0,-62));
+        resultRank = CreateText("Rank", resultGroup.transform, "Cyber Learner", 45, PrimaryTextColor, TextAnchor.MiddleCenter, FontStyle.Bold);
+        AddLayout(resultRank.gameObject, 66, 66);
+        resultMessageText = CreateText("ResultMessage", resultGroup.transform, "", 28, SecondaryTextColor, TextAnchor.MiddleCenter, FontStyle.Normal);
         resultMessageText.horizontalOverflow = HorizontalWrapMode.Wrap;
         resultMessageText.verticalOverflow = VerticalWrapMode.Overflow;
-        resultMessageText.lineSpacing = 1.15f;
-
+        var stats = CreateImage("StatsCard", resultGroup.transform, SurfaceColor);
+        AddLayout(stats.gameObject, 172, 172);
+        resultStats = CreateText("Stats", stats.transform, "", 30, PrimaryTextColor, TextAnchor.MiddleCenter, FontStyle.Normal);
+        Stretch(resultStats.rectTransform, Vector2.zero, Vector2.one, new Vector2(24,16), new Vector2(-24,-16));
+        // Actions follow content, rather than being pinned far below it.
+        footer.SetParent(content, false);
+        AddLayout(footer.gameObject, -1, -1);
+        footerLayout.childAlignment = TextAnchor.UpperCenter;
+        resetButton.transform.SetParent(footer, false);
+        resetButton.transform.SetAsFirstSibling();
+        AddLayout(resetButton.gameObject, 96, 96);
+        actionRow.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+        nextButton.transform.SetAsLastSibling();
         feedbackPanel.SetActive(false);
         resultGroup.SetActive(false);
         modalRoot.SetActive(false);
+    }
+
+    private static Sprite GetRingSprite()
+    {
+        if (ringSprite != null) return ringSprite;
+        const int size = 256;
+        var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.filterMode = FilterMode.Bilinear;
+        texture.wrapMode = TextureWrapMode.Clamp;
+        var pixels = new Color32[size * size];
+        for (int y = 0; y < size; y++)
+        for (int x = 0; x < size; x++)
+        {
+            float d = new Vector2(x + .5f - size / 2f, y + .5f - size / 2f).magnitude;
+            float a = Mathf.Clamp01(10.5f - Mathf.Abs(d - 112f));
+            pixels[y * size + x] = new Color32(255,255,255,(byte)(a * 255));
+        }
+        texture.SetPixels32(pixels);
+        texture.Apply(false, true);
+        ringSprite = Sprite.Create(texture, new Rect(0,0,size,size), new Vector2(.5f,.5f));
+        return ringSprite;
+    }
+
+    private void UpdateProgress(int answered)
+    {
+        if (progressFill == null || questions == null || questions.Count == 0) return;
+        progressFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01((float)answered / questions.Count), 1);
+        progressFill.rectTransform.offsetMin = Vector2.zero;
+        progressFill.rectTransform.offsetMax = Vector2.zero;
     }
 
     private void EnsureEventSystem()
@@ -710,6 +813,7 @@ public class ThreatQuizController : MonoBehaviour
         imageObject.transform.SetParent(parent, false);
         UnityEngine.UI.Image image = imageObject.GetComponent<UnityEngine.UI.Image>();
         image.color = color;
+        CyberUiStyle.ApplySurface(image, objectName);
         return image;
     }
 
@@ -768,10 +872,10 @@ public class ThreatQuizController : MonoBehaviour
     private static Color GetAccentColor(string threatId)
     {
         if (string.Equals(threatId, "Malware", StringComparison.OrdinalIgnoreCase))
-            return new Color32(255, 84, 77, 255);
+            return new Color32(255, 77, 94, 255);
         if (string.Equals(threatId, "Ransomware", StringComparison.OrdinalIgnoreCase))
-            return new Color32(255, 190, 54, 255);
-        return new Color32(22, 199, 255, 255);
+            return new Color32(251, 191, 36, 255);
+        return new Color32(59, 130, 246, 255);
     }
 
     private static string BuildResultMessage(int resultScore, int total)
