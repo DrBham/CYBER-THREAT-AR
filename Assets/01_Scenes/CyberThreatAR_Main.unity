@@ -419,7 +419,7 @@ MonoBehaviour:
     type: 3}
   malwarePrefab: {fileID: 1427762245532895435, guid: a09d4a7e3b38dd64b8987c1165401b9d,
     type: 3}
-  ransomwarePrefab: {fileID: 1227122848931492627, guid: e4088feefc8f15546aff836544ccb742,
+  ransomwarePrefab: {fileID: 3730359613990899542, guid: 3eb67bfac7cb959429cf5090ad0e1a46,
     type: 3}
 --- !u!1 &410087039
 GameObject:

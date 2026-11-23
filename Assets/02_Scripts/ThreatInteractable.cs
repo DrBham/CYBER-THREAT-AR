@@ -8,7 +8,8 @@ public class ThreatInteractable : MonoBehaviour
 {
     [Header("Highlight")]
     [SerializeField] private Color highlightColor = new Color(0.1f, 0.9f, 1f, 1f);
-    [SerializeField, Range(0f, 1f)] private float highlightBlend = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float highlightBlend = 0.15f;
+    [SerializeField, Range(0f, 1f)] private float highlightEmission = 0.2f;
 
     [Header("Scale Limits")]
     [SerializeField, Min(0.1f)] private float minimumScaleMultiplier = 0.6f;
@@ -196,7 +197,7 @@ public class ThreatInteractable : MonoBehaviour
                 if (material.HasProperty("_Color"))
                     block.SetColor("_Color", tintedColor);
                 if (material.HasProperty("_EmissionColor"))
-                    block.SetColor("_EmissionColor", highlightColor * 0.65f);
+                    block.SetColor("_EmissionColor", highlightColor * highlightEmission);
 
                 targetRenderer.SetPropertyBlock(block, materialIndex);
             }
