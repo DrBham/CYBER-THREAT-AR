@@ -2,257 +2,92 @@
 
 # 🛡️ CYBER THREAT AR
 
-### Making Cybersecurity Threats Visible Through Augmented Reality
-
-**An Interactive Cybersecurity Education Experience · Unity · Android**
+**Learn about cybersecurity threats with Augmented Reality**
 
 ![Unity](https://img.shields.io/badge/Unity-2022.3.62f3-20232A?style=flat-square&logo=unity)
 ![AR Foundation](https://img.shields.io/badge/AR%20Foundation-5.2.2-2563EB?style=flat-square)
 ![ARCore](https://img.shields.io/badge/ARCore-5.2.2-4285F4?style=flat-square)
-![C#](https://img.shields.io/badge/Language-C%23-512BD4?style=flat-square)
 ![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)
-![Status](https://img.shields.io/badge/Status-AR%20Foundation%20Validated-15803D?style=flat-square)
-
-**Scan a card · Explore a cyber threat · Learn how to stay safe**
 
 </div>
 
----
+## About
 
-## Overview
+CYBER THREAT AR is an Android AR app that teaches three common cyber threats: **phishing, malware, and ransomware**. Point the camera at a threat card and an animated 3D model of that threat appears on it. From there you can read about the threat and take a short quiz.
 
-**CYBER THREAT AR** is an educational augmented reality application designed to make common cybersecurity threats easier to understand. With an Android device, users scan illustrated cards representing **phishing, malware, and ransomware**. Each recognized card serves as an anchor for a threat-specific 3D experience.
+This is an academic project for the Augmented Reality / Virtual Reality course.
 
-The project combines **image tracking**, **3D visualization**, and planned **interactive learning features** to connect everyday cybersecurity risks with memorable visual examples.
+## How to Use
 
-> **Current status:** The Android AR foundation and three threat-specific animated 3D prefabs are implemented. Editor Play Mode validation and an Android ARM64 development build pass; final on-device ARCore validation of the refined models is still required. Touch interactions, educational pop-ups, and quizzes remain separate workstreams.
+1. **Scan** one of the threat cards with your phone camera.
+2. **See** the 3D model appear on the card.
+3. **Interact**: tap to select, pinch to resize, twist with two fingers to rotate.
+4. **Learn**: tapping the model opens the definition, a real-world example, and prevention tips.
+5. **Test yourself** with **Uji Pemahaman**, a 3-question quiz on that threat.
+6. **Reset / Pindai Ulang** to start over or scan another card.
 
-## Explore Three Cyber Threats
+## Threat Cards
 
-<table>
-<tr>
-<td width="50%" align="center" valign="top">
+| Phishing | Malware | Ransomware |
+|:---:|:---:|:---:|
+| <img src="Assets/08_ImageTargets/Phishing_Card_NoBorder.png" width="160" /> | <img src="Assets/08_ImageTargets/Malware_Card_NoBorder.png" width="160" /> | <img src="Assets/08_ImageTargets/Ransomware_Card_NoBorder.png" width="160" /> |
+| Fake messages that trick people into giving away personal data. | Malicious software that damages devices or steals data. | Malware that locks your files and demands payment. |
+| 3D: envelope with a fishing hook | 3D: bug orbiting a computer | 3D: safe with a moving padlock |
 
-### 🎣 Phishing
+## Features
 
-<img src="Assets/08_ImageTargets/Phishing_Card_NoBorder.png" alt="Phishing image tracking card" width="190" />
+- **Image tracking** for three cards, each showing its own animated 3D model
+- **Touch interaction**: tap highlight, pinch scaling (0.6x–1.8x), two-finger rotation
+- **Education panel** with a definition, example, and prevention tips for each threat
+- **Contextual quiz** with three A–D questions per threat, instant right/wrong feedback, explanations, and a final score
+- **Reset / rescan** that returns the app to its starting state
 
-Deceptive emails and messages that try to trick people into sharing sensitive information. **Implemented 3D visual:** an animated envelope with a continuous fishing hook and line.
+## Tech Stack
 
-</td>
-<td width="50%" align="center" valign="top">
-
-### 🐛 Malware
-
-<img src="Assets/08_ImageTargets/Malware_Card_NoBorder.png" alt="Malware image tracking card" width="190" />
-
-Malicious software that can disrupt, damage, or compromise devices and data. **Implemented 3D visual:** a recognizable bug orbiting a desktop computer.
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center" valign="top">
-
-### 🔐 Ransomware
-
-<img src="Assets/08_ImageTargets/Ransomware_Card_NoBorder.png" alt="Ransomware image tracking card" width="190" />
-
-Malware that locks or encrypts files and demands payment. **Implemented 3D visual:** a safe with a detailed animated padlock.
-
-</td>
-<td width="50%" align="center" valign="top">
-
-### 📱 Learning Experience
-
-**1. Scan** a threat card  
-**2. Discover** its 3D illustration  
-**3. Explore** the explanation  
-**4. Interact** with the object  
-**5. Check** understanding through a quiz
-
-*Steps 3–5 describe the intended final experience.*
-
-</td>
-</tr>
-</table>
-
-## Key Features
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### AR & Interaction
-
-- **Three-card image tracking** — identify phishing, malware, and ransomware cards. ✅ Foundation tested
-- **Context-aware 3D objects** — display a different refined model for each card. ✅ Implemented
-- **Threat animations** — float, orbit, and lock motion with balanced two-second cycles. ✅ Implemented
-- **Tap & highlight** — select any tracked threat with a URP-safe highlight. ✅ Implemented
-- **Pinch & rotate** — bounded pinch scaling and two-finger 360° twist rotation. ✅ Implemented
-
-</td>
-<td width="50%" valign="top">
-
-### Education & Assessment
-
-- **Threat information** — definitions, real-world examples, and prevention tips. ✅ Implemented
-- **Contextual quizzes** — three questions matched to each scanned threat, with four A–D choices. ✅ Implemented
-- **Answer feedback** — green/red responses, explanations, running score, and final results. ✅ Implemented
-- **Reset & rescan** — close education state and restore object interaction transforms. ✅ Implemented
-
-</td>
-</tr>
-</table>
-
-## How It Works
-
-```mermaid
-flowchart TD
-    A[Android Camera] --> B[ARCore and AR Foundation]
-    B --> C{Recognized threat card}
-    C --> D[Phishing content]
-    C --> E[Malware content]
-    C --> F[Ransomware content]
-    D --> G[Interactive 3D learning experience]
-    E --> G
-    F --> G
-    G --> H[Educational content and quiz]
-```
-
-*Image recognition, refined 3D prefabs, object interaction, education panels, contextual quizzes, feedback, scoring, and reset integration are implemented. Final validation on a physical Android device remains required.*
-
-## Technology
-
-| Category | Technology |
+| | |
 |---|---|
-| Development engine | Unity 2022.3.62f3 LTS |
-| Render pipeline | Universal Render Pipeline (URP) |
-| AR framework | AR Foundation 5.2.2 |
-| Android AR provider | Google ARCore XR Plugin 5.2.2 |
-| Programming language | C# |
-| Image recognition | AR Tracked Image Manager + XR Reference Image Library |
-| Android configuration | OpenGLES3 · IL2CPP · ARM64 · minimum API 24 |
+| Engine | Unity 2022.3.62f3 LTS (URP) |
+| AR | AR Foundation 5.2.2 + Google ARCore 5.2.2 |
+| Language | C# |
+| Target | Android 7.0+ (API 24), ARM64, IL2CPP |
+
+## Getting Started
+
+**Run the APK:** install `CyberThreatAR_Development.apk` on an ARCore-supported Android phone, then scan the cards in `Assets/08_ImageTargets/` (printed or shown on a screen).
+
+**Open in Unity:**
+
+1. Clone this repo and open it with Unity **2022.3.62f3**.
+2. Open the scene `Assets/01_Scenes/CyberThreatAR_Main.unity`.
+3. Switch the platform to Android (**File → Build Settings**), then **Build** or **Build And Run**.
 
 ## Project Structure
 
 ```text
 Assets/
-├── 01_Scenes/         # Unity scenes
-├── 02_Scripts/        # C# logic
-├── 03_Prefabs/        # Reusable objects and AR content
-├── 04_Models/         # 3D assets
-├── 05_Animations/     # Animation assets
-├── 06_Materials/      # Materials and shaders
-├── 07_Textures/       # Texture assets
-├── 08_ImageTargets/   # Threat cards and image library
-├── 09_UI/             # Reserved for reusable UI assets; current panels are generated at runtime
-├── 10_Data/           # Reserved for external data assets; current education/quiz data lives in scripts
-└── Settings/          # URP configuration
-Packages/
-ProjectSettings/
+├── 01_Scenes/        # Main scene
+├── 02_Scripts/       # C# scripts (tracking, interaction, education, quiz)
+├── 03_Prefabs/       # 3D threat prefabs
+├── 04_Models/ 05_Animations/ 06_Materials/ 07_Textures/
+└── 08_ImageTargets/  # Threat cards + reference image library
 ```
 
-## Foundation Validation
+| Script | Purpose |
+|---|---|
+| `ThreatImageTracker` | Detects cards and spawns the matching 3D model |
+| `ThreatInteractionManager`, `ThreatInteractable` | Tap, pinch, rotate, and reset |
+| `ThreatEducationPanelController`, `ThreatEducationContent` | Threat info panel and its content |
+| `ThreatQuizController`, `ThreatQuizContent` | Quiz flow, questions, and scoring |
 
-<table>
-<tr>
-<td width="50%" valign="top">
+## Team
 
-### ✅ Configuration Verified
-
-- Android build and ARCore setup
-- XR Origin, AR Session, and AR Camera
-- URP AR background rendering
-- Three-card reference image library
-- Image-to-prefab mapping script
-- XR Project Validation: **0 issues**
-
-</td>
-<td width="50%" valign="top">
-
-### ✅ Device Tests Passed
-
-- **Phishing** → blue cube
-- **Malware** → red cube
-- **Ransomware** → gold cube
-- Objects follow tracked cards
-- Objects hide when tracking is lost and reappear after tracking resumes
-
-*Tests used the cards displayed on a monitor; printed-card performance has not yet been independently verified.*
-
-</td>
-</tr>
-</table>
-
-## 3D Visualization & Animation Validation
-
-- `Threat_Phising.prefab`: continuous J-shaped hook mesh, fishing line, envelope materials, and looping float animation.
-- `Threat_Malware.prefab`: monitor stand/base, detailed bug silhouette, and looping orbit animation.
-- `Threat_Ransomware.prefab`: safe-door bolts, readable keyhole, metallic lock materials, and looping lock animation.
-- All three prefab roots spawn at X +90 degrees and unit scale so their local `-Z` front aligns with the tracked-image `+Y` surface normal; Phishing uses `(X 0.0025, Z -0.0355)` to overlay its 3D envelope on the printed envelope, Malware uses local position zero, and Ransomware uses Z `-0.035` to center its visual bounds on the marker.
-- Unity Console: no project compilation or runtime errors during final Play Mode checks.
-- Android development build: **Success** (IL2CPP, ARM64), generated as `CyberThreatAR-Development.apk` on 2026-11-08.
-- APK SHA-256: `22576CD31E07018D482E5D787BDDE8810D836564EDA50A2F12AF561E788C8F71`.
-
-The APK build validates the Android build pipeline, not live tracking behavior. A physical ARCore-capable Android device must still verify camera permission, recognition of all three cards, tracking stability, visibility changes, scale, material appearance, and animation performance.
-
-## Object Interaction Validation
-
-- `ThreatInteractionManager` is attached to `XR Origin` at runtime without changing the shared scene.
-- Every spawned threat receives a renderer-sized `BoxCollider` and `ThreatInteractable` component at runtime.
-- Tap raycasts, selection highlight, bounded scaling (`0.6x`–`1.8x`), two-finger twist rotation, and transform reset passed Play Mode checks for Phishing, Malware, and Ransomware.
-- `ThreatInteractionEvents.ThreatTapped` exposes the selected threat ID and GameObject for the education panel integration.
-- `ThreatInteractionManager.Instance.ResetInteractions()` is the integration point for the Reset/Pindai Ulang button.
-- Android touch behavior still requires final validation on a physical device; no Android build was run for this interaction checkpoint.
-
-## Education UI & Reset Validation
-
-- Runtime uGUI panel uses Screen Space Overlay, safe-area anchors, CanvasScaler, GraphicRaycaster, and an EventSystem without modifying the shared scene.
-- Phishing, Malware, and Ransomware each provide a name, definition, real-world example, and prevention guidance from `ThreatEducationCatalog`.
-- Tap integration opens context-matched content through `ThreatInteractionEvents.ThreatTapped`; losing the selection closes the matching panel.
-- The ScrollRect hierarchy includes a masked Viewport and vertically fitted Content container for smaller mobile screens.
-- Uji Pemahaman emits `ThreatEducationEvents.QuizRequested(threatId)` and opens the matching `ThreatQuizController` flow.
-- Reset/Pindai Ulang closes the panel, restores object interaction transforms, clears highlight, and emits `ThreatEducationEvents.ResetRequested` for quiz reset integration.
-- Play Mode hierarchy, content switching, button callbacks, and reset lifecycle passed without Console errors; physical Android safe-area and touch validation remain required.
-
-## Contextual Quiz Validation
-
-- `ThreatQuizCatalog` contains three complete questions for each of Phishing, Malware, and Ransomware; every question has four A–D choices, one validated answer, and an explanation.
-- `ThreatQuizController` is attached to `XR Origin` at runtime and builds a separate Screen Space Overlay Canvas without changing the shared scene or creating a UI prefab.
-- The quiz uses safe-area anchors, CanvasScaler, GraphicRaycaster, one EventSystem, and a masked vertical ScrollRect for smaller screens.
-- Correct choices turn green; incorrect choices turn red while the correct choice is shown in green. Each answer displays an explanation and updates the score.
-- Completing the third question opens a result view with final score, performance guidance, Ulangi Kuis, Kembali ke Informasi, and Reset/Pindai Ulang actions.
-- Play Mode passed the full open → answer → feedback → next → result → retry → return flow for all three threats. Quiz and education reset integration also passed with no Console errors.
-- Game View screenshots verified the question/feedback and final-result layouts in the Editor. Final portrait safe-area, Android touch input, and AR camera-overlay behavior still require a physical Android device.
-
-## Feature Integration Ownership
-
-| Area | Main runtime components | Implemented behavior |
-|---|---|---|
-| Randy — Object interaction | `ThreatInteractionManager`, `ThreatInteractable`, `ThreatInteractionEvents` | Tap selection, highlight, collider setup, bounded pinch scaling, two-finger rotation, reset transform, and education-panel tap event. |
-| Triyanti — Education UI/reset | `ThreatEducationContent`, `ThreatEducationEvents`, `ThreatEducationPanelController` | Contextual threat information, responsive panel, Uji Pemahaman entry point, panel close, and Reset/Pindai Ulang integration. |
-| Nabil — Contextual quiz | `ThreatQuizContent`, `ThreatQuizEvents`, `ThreatQuizController` | Threat-specific A–D questions, answer feedback, explanations, scoring, results, retry, return, and reset integration. |
-
-## Development Status
-
-- [x] Establish Unity and Android AR environment
-- [x] Import three image targets and configure reference library
-- [x] Implement and validate placeholder tracking on Android
-- [x] Complete foundation configuration audit
-- [x] Replace placeholders with animated threat-specific 3D scenes
-- [x] Implement touch interaction and object manipulation
-- [x] Add educational information panels and reset/rescan flow
-- [x] Implement contextual quizzes, feedback, scoring, results, and reset integration
-- [ ] Complete integrated testing and final demonstration
-
-## Academic Purpose & Asset Credits
-
-This project was created as an academic **Augmented Reality / Virtual Reality** assignment to explore interactive cybersecurity education.
-
-Third-party graphics, 3D models, textures, and animations remain subject to their respective licenses. Credits will be provided for externally sourced assets where required.
+| Name | Responsibility |
+|---|---|
+| Dimas | Project setup, AR foundation (ARCore + image tracking), 3D threat models and animations, final UI redesign and integration |
+| Randy | Object interaction (tap, pinch, rotate) |
+| Triyanti | Education panel and reset flow |
+| Nabil | Contextual quiz |
 
 ---
 
-<div align="center">
-  <sub>CYBER THREAT AR · Learn to recognize digital threats before they become real problems.</sub>
-</div>
+<div align="center"><sub>Third-party assets remain under their respective licenses.</sub></div>
