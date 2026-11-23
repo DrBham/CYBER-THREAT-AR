@@ -25,7 +25,7 @@
 **CYBER THREAT AR** is an Android AR app that teaches three common cyber threats: **phishing, malware, and ransomware**. Point the camera at a threat card and an animated 3D model of that threat appears on it. From there you can read about the threat and take a short quiz.
 
 > [!NOTE]
-> This is an academic project for the **Augmented Reality / Virtual Reality** course.
+> This is an academic project for the **Augmented Reality** course.
 
 ## 🎮 How It Works
 
